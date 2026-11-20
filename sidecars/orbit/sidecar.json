@@ -1,0 +1,21 @@
+{
+  "command": "node",
+  "args": ["server.mjs"],
+  "restart_policy": "always",
+  "display_name": "苍蓝星轨",
+  "description": "将外部模型 API 直接挂载进反重力左下角原生模型选择器作为主脑使用，支持多渠道接入、模型拉取与多关键词搜索、与苍蓝协奏台一键同步及 2.33.0+ 底层补丁管理。",
+  "has_web_ui": true,
+  "agent_permissions": {
+    "allows_user_interactions": true
+  },
+  "ui_config": {
+    "display_name": "苍蓝星轨",
+    "views": [
+      {
+        "title": "苍蓝星轨",
+        "path": "/",
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE"
+      }
+    ]
+  }
+}

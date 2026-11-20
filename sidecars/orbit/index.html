@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>苍蓝星轨</title>
+  <style>
+    :root {
+      --bg: #131622;
+      --panel: #1b1f30;
+      --panel-2: #23283d;
+      --panel-hover: #282f48;
+      --border: #2e354d;
+      --text: #eef1f8;
+      --muted: #8e98b4;
+      --accent: #58a6ff;
+      --accent-2: #4c6ef5;
+      --ok: #3ddc97;
+      --warn: #f5b942;
+      --danger: #ff6b7a;
+      --ink: #ffffff;
+      --pill-bg: rgba(142, 152, 180, 0.14);
+    }
+    [data-theme="light"] {
+      --bg: #f3f5fb;
+      --panel: #ffffff;
+      --panel-2: #eef2fa;
+      --panel-hover: #e6ecf8;
+      --border: #d7dfef;
+      --text: #182032;
+      --muted: #5c6b86;
+      --accent: #3b5bdb;
+      --accent-2: #4c6ef5;
+      --ok: #0ca678;
+      --warn: #d97706;
+      --danger: #e03131;
+      --ink: #ffffff;
+      --pill-bg: rgba(92, 107, 134, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    button, input, select, textarea { font-family: inherit; font-size: 12.5px; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 8px; }
+    .brand h1 { margin: 0; font-size: 14.5px; font-weight: 600; }
+    .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(88, 166, 255, 0.16);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .badge.ok { background: rgba(61, 220, 151, 0.16); color: var(--ok); }
+    .badge.warn { background: rgba(245, 185, 66, 0.18); color: var(--warn); }
+    .badge.danger { background: rgba(255, 107, 122, 0.18); color: var(--danger); }
+    .badge.neutral { background: var(--pill-bg); color: var(--muted); }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 5px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .btn:hover:not(:disabled) { background: var(--panel-hover); border-color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn.primary { background: var(--accent-2); border-color: var(--accent-2); color: var(--ink); }
+    .btn.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+    .btn.danger { color: var(--danger); border-color: transparent; background: rgba(255, 107, 122, 0.1); }
+    .btn.danger:hover:not(:disabled) { background: rgba(255, 107, 122, 0.2); border-color: var(--danger); }
+    .btn.sm { padding: 4px 9px; font-size: 12px; }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 6px 16px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      overflow-x: auto;
+    }
+    .tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 13px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+    main { max-width: 1080px; margin: 0 auto; padding: 16px; }
+    .hidden { display: none !important; }
+    .subtitle { color: var(--muted); font-size: 12.5px; margin: 0 0 12px; }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .row-list { display: flex; flex-direction: column; gap: 10px; }
+    .item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.15s;
+      flex-wrap: wrap;
+    }
+    .item-row:hover { border-color: rgba(88, 166, 255, 0.55); }
+    .item-row.disabled-row { opacity: 0.65; }
+    .item-left { display: flex; flex-direction: column; gap: 4px; min-width: 220px; flex: 1; }
+    .item-title-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .item-name { font-size: 14px; font-weight: 600; }
+    .tag-pill {
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--panel-2);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot.ok { background: var(--ok); box-shadow: 0 0 6px rgba(61, 220, 151, 0.55); }
+    .dot.warn { background: var(--warn); }
+    .dot.off { background: #6b7590; }
+
+    .item-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .item-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 19px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #424963;
+      border-radius: 999px;
+      transition: 0.2s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 13px;
+      width: 13px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .switch input:checked + .slider { background: var(--ok); }
+    .switch input:checked + .slider:before { transform: translateX(15px); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 7px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    .hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+    .inline-row { display: flex; gap: 6px; align-items: center; }
+    .inline-row > *:first-child { flex: 1; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .chip.mounted-chip { border-color: var(--ok); background: rgba(61, 220, 151, 0.14); color: var(--ok); }
+    .chip button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0 2px;
+      font-size: 13px;
+      line-height: 1;
+    }
+    .chip button:hover { color: var(--danger); }
+
+    .fetched-picker {
+      margin-top: 8px;
+      padding: 0 8px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .fetched-toolbar {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      padding: 8px 0 6px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 6px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .fetched-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .fetched-item:hover { background: var(--panel-2); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 10, 18, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-head h2 { margin: 0; font-size: 15px; }
+    .modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--accent);
+      padding: 9px 14px;
+      border-radius: 9px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: 0.2s;
+      z-index: 99;
+      max-width: 360px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>🪐 苍蓝星轨</h1>
+      <span id="summary-badge" class="badge">加载中...</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn sm" onclick="openCustomModelsFile()" title="在资源管理器中定位 custom_models.json">打开模型文件</button>
+      <button class="btn sm" onclick="copyWebUrl()" title="复制浏览器独立全屏链接">复制全屏地址</button>
+      <button id="theme-btn" class="btn sm" onclick="toggleTheme()">🌙 暗色</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="native" onclick="switchTab('native')">原生主模型（左下角菜单）</button>
+    <button class="tab" data-tab="providers" onclick="switchTab('providers')">模型渠道</button>
+    <button class="tab" data-tab="patch" onclick="switchTab('patch')">星轨引擎（底层补丁）</button>
+  </nav>
+
+  <main>
+    <!-- Tab 1: Native Menu Models -->
+    <section id="tab-native">
+      <p class="subtitle">这里列出的模型会直接注入反重力输入框**左下角的原生模型下拉菜单**中作为主脑使用（底层代理每次请求实时读取，修改后立即生效；若左下角菜单尚未刷新列表，按一次 <code>Ctrl+R</code> 即可立刻刷出）。</p>
+      <div class="toolbar-row">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button class="btn primary sm" onclick="syncFromOrchestrator(true)">⚡ 从苍蓝协奏台一键同步并挂载</button>
+          <button class="btn sm" onclick="switchTab('providers')">+ 从渠道挑选挂载</button>
+          <button id="clean-demos-btn" class="btn danger sm hidden" onclick="cleanDemosAction()">🧹 清理默认示例模型</button>
+        </div>
+        <div style="min-width:220px;flex:1;max-width:320px;">
+          <input id="native-search" type="text" placeholder="🔍 搜索已挂载的原生主模型..." oninput="nativeSearchQuery=this.value;renderNativeModels();" />
+        </div>
+      </div>
+      <div id="native-models-list" class="row-list"></div>
+    </section>
+
+    <!-- Tab 2: Providers -->
+    <section id="tab-providers" class="hidden">
+      <p class="subtitle">管理外部 API 提供商渠道，支持从接口拉取模型并多关键词搜索，点击模型即可一键挂载到左下角原生下拉菜单。</p>
+      <div class="toolbar-row">
+        <div id="preset-buttons" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        <button class="btn sm" onclick="syncFromOrchestrator(false)">⇄ 仅从苍蓝协奏台导入渠道</button>
+      </div>
+      <div id="providers-list" class="row-list"></div>
+    </section>
+
+    <!-- Tab 3: Runtime Patch -->
+    <section id="tab-patch" class="hidden">
+      <p class="subtitle">管理反重力客户端 <code>app.asar</code> 的星轨底层代理补丁（已适配 2.32+/2.33.0+ 的 <code>...spread</code> 启动布局及中文界面，并与猫娘挂件共存）。</p>
+      <div class="card">
+        <h3>
+          <span>当前客户端补丁状态</span>
+          <span id="patch-badge" class="badge">检测中...</span>
+        </h3>
+        <div id="patch-details" style="font-size:12.5px;color:var(--muted);line-height:1.8;"></div>
+        <div class="field" style="margin-top:12px;">
+          <label>反重力 resources 目录路径</label>
+          <input id="patch-res-dir" type="text" placeholder="例如：D:\AI\antigravity\resources" />
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+          <button class="btn primary" onclick="generatePatchBat('install')">📦 在桌面生成「安装/更新星轨补丁.bat」</button>
+          <button class="btn danger" onclick="generatePatchBat('restore')">↩ 在桌面生成「还原原版客户端.bat」</button>
+        </div>
+        <div class="hint" style="margin-top:8px;">说明：因为反重力运行时 <code>app.asar</code> 被 Windows 进程占用，点击上方按钮会在桌面生成纯 ASCII 一键脚本，退出反重力后双击即可完成注入或还原。</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Provider Modal -->
+  <div id="provider-modal" class="modal-backdrop hidden" onclick="if(event.target===this) closeProviderModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="pm-title">编辑模型渠道</h2>
+        <button class="btn sm" onclick="closeProviderModal()">✕</button>
+      </div>
+      <input type="hidden" id="pm-id" />
+      <input type="hidden" id="pm-preset" />
+      <div class="grid-2" style="gap:10px;">
+        <div class="field">
+          <label>渠道名称 *</label>
+          <input id="pm-name" type="text" placeholder="例如：DeepSeek / 本地聚合网关" />
+        </div>
+        <div class="field">
+          <label>标签（Tag）</label>
+          <input id="pm-tag" type="text" placeholder="例如：官方 / 本地聚合 / 自定义" />
+        </div>
+        <div class="field">
+          <label>接口协议 *</label>
+          <select id="pm-protocol">
+            <option value="openai">OpenAI 兼容 (/chat/completions)</option>
+            <option value="anthropic">Anthropic 兼容 (/v1/messages)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Base URL *</label>
+          <input id="pm-baseurl" type="text" placeholder="例如：https://api.deepseek.com/v1" />
+        </div>
+      </div>
+      <div class="field">
+        <label>API Key</label>
+        <input id="pm-apikey" type="password" autocomplete="off" placeholder="填入 API 密钥（本地免密端口可留空）" />
+        <div id="pm-key-hint" class="hint"></div>
+        <label id="pm-clearkey-wrap" class="hidden" style="display:flex;align-items:center;gap:6px;margin-top:4px;cursor:pointer;font-size:12px;">
+          <input id="pm-clearkey" type="checkbox" style="width:auto;" /> 清空已保存的密钥
+        </label>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;justify-content:space-between;">
+          <span>渠道候选模型（绿色代表已挂载至左下角菜单）</span>
+          <button type="button" class="btn sm" onclick="fetchModelsInModal()">↻ 从接口拉取模型</button>
+        </label>
+        <div class="inline-row" style="margin-bottom:6px;">
+          <input id="pm-new-model" type="text" placeholder="手动输入模型 ID 后点添加，如 deepseek-chat" onkeydown="if(event.key==='Enter'){event.preventDefault();addModalModel();}" />
+          <button type="button" class="btn sm" onclick="addModalModel()">+ 添加</button>
+        </div>
+        <div id="pm-selected-filter-bar" class="inline-row hidden" style="margin-bottom:6px;">
+          <input id="pm-selected-search" type="text" placeholder="筛选已添加的模型..." oninput="modalSelectedQuery=this.value;renderModalModels();" />
+          <button type="button" class="btn danger sm" onclick="clearModalModels()">清空列表</button>
+        </div>
+        <div id="pm-models-chips" class="chips"></div>
+        <div id="pm-fetched-box" class="fetched-picker hidden"></div>
+      </div>
+      <div class="field">
+        <label>自定义附加请求头 Headers（可选 JSON）</label>
+        <textarea id="pm-headers" rows="2" placeholder='例如：{"HTTP-Referer":"https://example.com"}'></textarea>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" onclick="closeProviderModal()">取消</button>
+        <button class="btn" onclick="saveProviderModal(true)">保存并把列表模型全部挂载到原生菜单</button>
+        <button class="btn primary" onclick="saveProviderModal(false)">仅保存渠道</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Native Model Modal -->
+  <div id="native-modal" class="modal-backdrop hidden" onclick="if(event.target===this) closeNativeModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="nm-title">编辑原生菜单模型</h2>
+        <button class="btn sm" onclick="closeNativeModal()">✕</button>
+      </div>
+      <input type="hidden" id="nm-name" />
+      <div class="field">
+        <label>左下角菜单显示名称 (Display Name) *</label>
+        <input id="nm-display" type="text" placeholder="例如：DeepSeek V4.1 Flash" />
+      </div>
+      <div class="grid-2" style="gap:10px;">
+        <div class="field">
+          <label>上游模型 ID (External Model Name) *</label>
+          <input id="nm-ext" type="text" />
+        </div>
+        <div class="field">
+          <label>完整请求端点 (API URL) *</label>
+          <input id="nm-apiurl" type="text" />
+        </div>
+        <div class="field">
+          <label>上下文窗口 (Context Window)</label>
+          <input id="nm-ctx" type="number" min="4096" max="2000000" />
+        </div>
+        <div class="field">
+          <label>最大输出 Tokens (需小于上下文窗口)</label>
+          <input id="nm-maxout" type="number" min="1024" max="200000" />
+        </div>
+      </div>
+      <div class="field">
+        <label>单独覆盖该模型的 API Key（可选，留空则保持现有密钥）</label>
+        <input id="nm-apikey" type="password" autocomplete="off" placeholder="留空则保持不变" />
+      </div>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;margin:8px 0;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input id="nm-thinking" type="checkbox" style="width:auto;" /> 支持思考/推理 (Thinking)
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input id="nm-vision" type="checkbox" style="width:auto;" /> 支持图片视觉 (Vision)
+        </label>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" onclick="closeNativeModal()">取消</button>
+        <button class="btn primary" onclick="saveNativeModal()">保存修改</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const TOKEN = params.get("token") || "";
+    let state = { nativeModels: [], providers: [], presets: [], patchStatus: {}, webUrl: "" };
+    let nativeSearchQuery = "";
+    let modalModels = [];
+    let modalFetchedModels = [];
+    let modalFetchedQuery = "";
+    let modalSelectedQuery = "";
+
+    function api(url, opts = {}) {
+      const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+      if (TOKEN) headers["X-Codeium-Sidecar-Token"] = TOKEN;
+      return fetch(url, Object.assign({}, opts, { headers })).then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || ("HTTP " + r.status));
+        return data;
+      });
+    }
+
+    function toast(msg, isError = false) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.borderColor = isError ? "var(--danger)" : "var(--accent)";
+      el.classList.add("show");
+      clearTimeout(window._aoToast);
+      window._aoToast = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+    }
+
+    function matchesKeywords(text, query) {
+      const q = String(query || "").trim().toLowerCase();
+      if (!q) return true;
+      const lower = String(text || "").toLowerCase();
+      return q.split(/\s+/).filter(Boolean).every((t) => lower.includes(t));
+    }
+
+    function applyTheme(t) {
+      const mode = t === "light" ? "light" : "dark";
+      if (mode === "light") document.documentElement.setAttribute("data-theme", "light");
+      else document.documentElement.removeAttribute("data-theme");
+      document.getElementById("theme-btn").textContent = mode === "light" ? "☀ 亮色" : "🌙 暗色";
+      try { localStorage.setItem("ao_console_theme", mode); } catch {}
+    }
+
+    function toggleTheme() {
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      applyTheme(isLight ? "dark" : "light");
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+      ["native", "providers", "patch"].forEach((t) => {
+        document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
+      });
+    }
+
+    function copyWebUrl() {
+      const url = state.webUrl || location.href;
+      navigator.clipboard?.writeText(url).then(() => toast("已复制全屏访问地址")).catch(() => toast(url));
+    }
+
+    async function openCustomModelsFile() {
+      try {
+        const res = await api("/api/open-custom-models", { method: "POST", body: "{}" });
+        toast("模型文件：" + res.path);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function refreshAll() {
+      state = await api("/api/state");
+      renderAll();
+    }
+
+    function renderAll() {
+      const activeNative = (state.nativeModels || []).filter((m) => m.enabled !== false && !m.isDemo).length;
+      const totalNative = (state.nativeModels || []).length;
+      const badge = document.getElementById("summary-badge");
+      badge.textContent = `已挂载 ${activeNative} 个主模型（共 ${totalNative} 项）`;
+      badge.className = "badge " + (activeNative > 0 ? "ok" : "warn");
+
+      const hasDemos = (state.nativeModels || []).some((m) => m.isDemo);
+      document.getElementById("clean-demos-btn").classList.toggle("hidden", !hasDemos);
+
+      renderNativeModels();
+      renderPresetButtons();
+      renderProviders();
+      renderPatchStatus();
+    }
+
+    // Tab 1: Native Models
+    function renderNativeModels() {
+      const box = document.getElementById("native-models-list");
+      box.innerHTML = "";
+      const list = (state.nativeModels || []).filter((m) =>
+        matchesKeywords(`${m.displayName} ${m.externalModelName} ${m.name} ${m.apiUrl}`, nativeSearchQuery)
+      );
+      if (!list.length) {
+        box.innerHTML = '<div class="card">当前没有匹配的已挂载主模型。可以点上方「⚡ 从苍蓝协奏台一键同步并挂载」或去「模型渠道」页挑选挂载~</div>';
+        return;
+      }
+
+      for (const m of list) {
+        const row = document.createElement("div");
+        row.className = "item-row" + (m.enabled !== false ? "" : " disabled-row");
+        row.innerHTML = `
+          <div class="item-left">
+            <div class="item-title-line">
+              <span class="dot ${m.enabled !== false ? (m.isDemo ? "warn" : "ok") : "off"}"></span>
+              <span class="item-name">${escapeHtml(m.displayName || m.externalModelName || m.name)}</span>
+              <span class="tag-pill">${escapeHtml(m.apiFormat || m.provider || "openai")}</span>
+              <span class="badge neutral">槽位 ${escapeHtml(m.placeholderSlot)}</span>
+              ${m.supportsThinking ? '<span class="badge">Thinking</span>' : ""}
+              ${m.supportsVision ? '<span class="badge">Vision</span>' : ""}
+              ${m.isDemo ? '<span class="badge warn">默认示例（建议清理）</span>' : ""}
+            </div>
+            <div class="item-sub">
+              <span>模型 ID: <code>${escapeHtml(m.externalModelName || m.name)}</code></span>
+              <span>端点: ${escapeHtml(m.apiUrl)}</span>
+              <span>密钥: ${escapeHtml(m.apiKeyMasked || "未设(免密)")}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <label class="switch" title="在左下角菜单中启用/隐藏">
+              <input type="checkbox" ${m.enabled !== false ? "checked" : ""} onchange="toggleNativeModel('${escapeHtml(m.name)}', this.checked)" />
+              <span class="slider"></span>
+            </label>
+            <button class="btn sm" onclick="openNativeModal('${escapeHtml(m.name)}')">编辑</button>
+            <button class="btn danger sm" onclick="unmountNativeModel('${escapeHtml(m.name)}', '${escapeHtml(m.displayName || m.name)}')">移除</button>
+          </div>
+        `;
+        box.appendChild(row);
+      }
+    }
+
+    async function toggleNativeModel(name, enabled) {
+      try {
+        const res = await api("/api/native/update", { method: "POST", body: JSON.stringify({ name, enabled }) });
+        state = res.state;
+        renderAll();
+        toast(enabled ? "已在原生菜单启用" : "已从原生菜单隐藏");
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function unmountNativeModel(name, label) {
+      try {
+        const res = await api("/api/native/unmount", { method: "POST", body: JSON.stringify({ name }) });
+        state = res.state;
+        renderAll();
+        toast("已从原生菜单移除：" + label);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function cleanDemosAction() {
+      try {
+        const res = await api("/api/native/clean-demos", { method: "POST", body: "{}" });
+        state = res.state;
+        renderAll();
+        toast(`已清理 ${res.result.removed} 个默认示例模型`);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function syncFromOrchestrator(alsoMountModels) {
+      try {
+        const res = await api("/api/sync-orchestrator", {
+          method: "POST",
+          body: JSON.stringify({ alsoMountModels, removeDemos: true })
+        });
+        state = res.state;
+        renderAll();
+        const r = res.result;
+        toast(alsoMountModels
+          ? `✅ 已从苍蓝协奏台同步 ${r.importedProviders} 个渠道，并挂载 ${r.mountedModels} 个模型到原生菜单！按 Ctrl+R 即可刷新左下角列表`
+          : `✅ 已从苍蓝协奏台导入 ${r.importedProviders} 个渠道`);
+      } catch (e) {
+        toast("同步失败：" + e.message, true);
+      }
+    }
+
+    function openNativeModal(name) {
+      const m = (state.nativeModels || []).find((x) => x.name === name);
+      if (!m) return;
+      document.getElementById("nm-name").value = m.name;
+      document.getElementById("nm-display").value = m.displayName || m.externalModelName || "";
+      document.getElementById("nm-ext").value = m.externalModelName || "";
+      document.getElementById("nm-apiurl").value = m.apiUrl || "";
+      document.getElementById("nm-ctx").value = m.contextWindow || 128000;
+      document.getElementById("nm-maxout").value = m.maxOutputTokens || 16384;
+      document.getElementById("nm-apikey").value = "";
+      document.getElementById("nm-thinking").checked = Boolean(m.supportsThinking);
+      document.getElementById("nm-vision").checked = Boolean(m.supportsVision);
+      document.getElementById("native-modal").classList.remove("hidden");
+    }
+
+    function closeNativeModal() {
+      document.getElementById("native-modal").classList.add("hidden");
+    }
+
+    async function saveNativeModal() {
+      const payload = {
+        name: document.getElementById("nm-name").value,
+        displayName: document.getElementById("nm-display").value.trim(),
+        externalModelName: document.getElementById("nm-ext").value.trim(),
+        apiUrl: document.getElementById("nm-apiurl").value.trim(),
+        contextWindow: Number(document.getElementById("nm-ctx").value) || 128000,
+        maxOutputTokens: Number(document.getElementById("nm-maxout").value) || 16384,
+        apiKey: document.getElementById("nm-apikey").value.trim() || undefined,
+        supportsThinking: document.getElementById("nm-thinking").checked,
+        supportsVision: document.getElementById("nm-vision").checked
+      };
+      try {
+        const res = await api("/api/native/update", { method: "POST", body: JSON.stringify(payload) });
+        state = res.state;
+        closeNativeModal();
+        renderAll();
+        toast("已更新原生主模型：" + payload.displayName);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    // Tab 2: Providers & Model Search
+    function renderPresetButtons() {
+      const box = document.getElementById("preset-buttons");
+      box.innerHTML = '<span style="color:var(--muted);font-size:12px;margin-right:4px;">快速添加渠道：</span>';
+      for (const preset of state.presets || []) {
+        const btn = document.createElement("button");
+        btn.className = "btn sm";
+        btn.textContent = "+ " + preset.name;
+        btn.onclick = () => openProviderModal(null, preset);
+        box.appendChild(btn);
+      }
+      const customBtn = document.createElement("button");
+      customBtn.className = "btn primary sm";
+      customBtn.textContent = "+ 自定义渠道";
+      customBtn.onclick = () => openProviderModal(null, null);
+      box.appendChild(customBtn);
+    }
+
+    function isModelMounted(providerId, extModel) {
+      return (state.nativeModels || []).some(
+        (m) => m.externalModelName === extModel && String(m.name || "").startsWith(`models/${providerId}/`)
+      );
+    }
+
+    function renderProviders() {
+      const box = document.getElementById("providers-list");
+      box.innerHTML = "";
+      const providers = state.providers || [];
+      if (!providers.length) {
+        box.innerHTML = '<div class="card">暂无渠道，可点上方「⇄ 仅从苍蓝协奏台导入渠道」或添加新渠道~</div>';
+        return;
+      }
+
+      for (const p of providers) {
+        const models = p.models || [];
+        const mountedCount = models.filter((m) => isModelMounted(p.id, m)).length;
+        const row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML = `
+          <div class="item-left">
+            <div class="item-title-line">
+              <span class="dot ${p.hasApiKey || /127\.0\.0\.1|localhost/.test(p.baseUrl) ? "ok" : "warn"}"></span>
+              <span class="item-name">${escapeHtml(p.name)}</span>
+              <span class="tag-pill">${escapeHtml(p.tag || "自定义")}</span>
+              <span class="badge neutral">已挂载 ${mountedCount}/${models.length} 个模型</span>
+            </div>
+            <div class="item-sub">
+              <span>协议: ${escapeHtml(p.protocol)}</span>
+              <span>地址: ${escapeHtml(p.baseUrl)}</span>
+              <span>密钥: ${escapeHtml(p.apiKeyMasked || "未设置")}</span>
+            </div>
+            ${models.length ? `
+              <div class="chips" style="margin-top:6px;">
+                ${models.slice(0, 18).map((m) => {
+                  const mounted = isModelMounted(p.id, m);
+                  return `<span class="chip ${mounted ? "mounted-chip" : ""}" onclick="quickToggleMount('${escapeHtml(p.id)}','${escapeHtml(m)}')" title="${mounted ? "已挂载到左下角菜单，点击可移除" : "点击挂载到左下角原生模型菜单"}">${mounted ? "★ 已挂载 · " : "+ 挂载 · "}${escapeHtml(m)}</span>`;
+                }).join("")}
+                ${models.length > 18 ? `<span class="hint">... 共 ${models.length} 个模型（点编辑可搜索）</span>` : ""}
+              </div>
+            ` : ""}
+          </div>
+          <div class="item-actions">
+            ${models.length ? `<button class="btn primary sm" onclick="mountAllProviderModels('${escapeHtml(p.id)}')">全部挂载到左下角菜单</button>` : ""}
+            <button class="btn sm" onclick="openProviderModal('${escapeHtml(p.id)}')">编辑 / 拉取模型</button>
+            <button class="btn danger sm" onclick="deleteProviderAction('${escapeHtml(p.id)}','${escapeHtml(p.name)}')">删除</button>
+          </div>
+        `;
+        box.appendChild(row);
+      }
+    }
+
+    async function quickToggleMount(providerId, extModel) {
+      try {
+        const mounted = (state.nativeModels || []).find(
+          (m) => m.externalModelName === extModel && String(m.name || "").startsWith(`models/${providerId}/`)
+        );
+        if (mounted) {
+          const res = await api("/api/native/unmount", { method: "POST", body: JSON.stringify({ name: mounted.name }) });
+          state = res.state;
+          renderAll();
+          toast(`已从左下角菜单移除：${extModel}`);
+        } else {
+          const res = await api("/api/native/mount", {
+            method: "POST",
+            body: JSON.stringify({ providerId, externalModelName: extModel })
+          });
+          state = res.state;
+          renderAll();
+          toast(`★ 已挂载到左下角菜单：${extModel}`);
+        }
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function mountAllProviderModels(providerId) {
+      const p = (state.providers || []).find((x) => x.id === providerId);
+      if (!p || !p.models?.length) return;
+      try {
+        const res = await api("/api/native/mount", {
+          method: "POST",
+          body: JSON.stringify({ providerId, modelNames: p.models, removeDemos: true })
+        });
+        state = res.state;
+        renderAll();
+        toast(`★ 已将 ${p.name} 的 ${res.result.mountedCount} 个模型挂载到左下角原生菜单！`);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    async function deleteProviderAction(id, name) {
+      if (!confirm(`确定删除渠道「${name}」吗？`)) return;
+      try {
+        const res = await api("/api/provider/delete", { method: "POST", body: JSON.stringify({ id }) });
+        state = res.state;
+        renderAll();
+        toast("已删除渠道：" + name);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+
+    function openProviderModal(providerId, presetObj) {
+      const modal = document.getElementById("provider-modal");
+      document.getElementById("pm-fetched-box").classList.add("hidden");
+      document.getElementById("pm-fetched-box").innerHTML = "";
+      document.getElementById("pm-new-model").value = "";
+      document.getElementById("pm-selected-search").value = "";
+      document.getElementById("pm-clearkey").checked = false;
+      modalFetchedModels = [];
+      modalFetchedQuery = "";
+      modalSelectedQuery = "";
+
+      if (providerId) {
+        const p = (state.providers || []).find((x) => x.id === providerId);
+        if (!p) return;
+        document.getElementById("pm-title").textContent = "编辑渠道 · " + p.name;
+        document.getElementById("pm-id").value = p.id;
+        document.getElementById("pm-preset").value = p.preset || "custom";
+        document.getElementById("pm-name").value = p.name;
+        document.getElementById("pm-tag").value = p.tag || "自定义";
+        document.getElementById("pm-protocol").value = p.protocol || "openai";
+        document.getElementById("pm-baseurl").value = p.baseUrl || "";
+        document.getElementById("pm-apikey").value = "";
+        document.getElementById("pm-headers").value = p.headers && Object.keys(p.headers).length ? JSON.stringify(p.headers) : "";
+        document.getElementById("pm-key-hint").textContent = p.hasApiKey
+          ? `当前已保存密钥：${p.apiKeyMasked}（留空则保持不变）`
+          : "当前未设置密钥，请填入（本地免密端口可留空）";
+        document.getElementById("pm-clearkey-wrap").classList.toggle("hidden", !p.hasApiKey);
+        modalModels = [...(p.models || [])];
+      } else {
+        const src = presetObj || { preset: "custom", name: "", tag: "自定义", protocol: "openai", baseUrl: "", models: [] };
+        document.getElementById("pm-title").textContent = src.name ? ("添加渠道 · " + src.name) : "添加自定义渠道";
+        document.getElementById("pm-id").value = "";
+        document.getElementById("pm-preset").value = src.preset || "custom";
+        document.getElementById("pm-name").value = src.name || "";
+        document.getElementById("pm-tag").value = src.tag || "自定义";
+        document.getElementById("pm-protocol").value = src.protocol || "openai";
+        document.getElementById("pm-baseurl").value = src.baseUrl || "";
+        document.getElementById("pm-apikey").value = "";
+        document.getElementById("pm-headers").value = "";
+        document.getElementById("pm-key-hint").textContent = "密钥将保存在本地 ~/.gemini/azure-orbit/providers.json，挂载到原生菜单后由反重力自动加密保护。";
+        document.getElementById("pm-clearkey-wrap").classList.add("hidden");
+        modalModels = [...(src.models || [])];
+      }
+      renderModalModels();
+      modal.classList.remove("hidden");
+    }
+
+    function closeProviderModal() {
+      document.getElementById("provider-modal").classList.add("hidden");
+    }
+
+    function renderModalModels() {
+      const filterBar = document.getElementById("pm-selected-filter-bar");
+      const searchInput = document.getElementById("pm-selected-search");
+      if (modalModels.length > 6) {
+        filterBar.classList.remove("hidden");
+        searchInput.placeholder = `筛选已添加的 ${modalModels.length} 个模型...`;
+      } else {
+        filterBar.classList.add("hidden");
+        if (modalSelectedQuery) {
+          modalSelectedQuery = "";
+          searchInput.value = "";
+        }
+      }
+
+      const box = document.getElementById("pm-models-chips");
+      box.innerHTML = "";
+      if (!modalModels.length) {
+        box.innerHTML = '<span class="hint">暂无模型，可点上方「从接口拉取模型」或手动输入添加。</span>';
+        if (modalFetchedModels.length) renderFetchedItems();
+        return;
+      }
+      const pid = document.getElementById("pm-id").value;
+      const visible = modalModels.filter((m) => matchesKeywords(m, modalSelectedQuery));
+      for (const m of visible) {
+        const chip = document.createElement("span");
+        const mounted = pid && isModelMounted(pid, m);
+        chip.className = "chip" + (mounted ? " mounted-chip" : "");
+        chip.innerHTML = `<span>${mounted ? "★ " : ""}${escapeHtml(m)}</span><button type="button" title="移除">×</button>`;
+        chip.querySelector("button").onclick = () => {
+          modalModels = modalModels.filter((x) => x !== m);
+          renderModalModels();
+        };
+        box.appendChild(chip);
+      }
+      if (modalFetchedModels.length) renderFetchedItems();
+    }
+
+    function clearModalModels() {
+      modalModels = [];
+      modalSelectedQuery = "";
+      document.getElementById("pm-selected-search").value = "";
+      renderModalModels();
+    }
+
+    function addModalModel() {
+      const inp = document.getElementById("pm-new-model");
+      const val = inp.value.trim();
+      if (!val) return;
+      for (const item of val.split(/[,，\n]+/)) {
+        const m = item.trim();
+        if (m && !modalModels.includes(m)) modalModels.push(m);
+      }
+      inp.value = "";
+      renderModalModels();
+    }
+
+    function renderFetchedModels() {
+      const box = document.getElementById("pm-fetched-box");
+      if (!modalFetchedModels.length) {
+        box.innerHTML = '<span class="hint" style="display:block;padding-top:8px;">接口返回了空的模型列表，请手动输入模型名。</span>';
+        return;
+      }
+      box.innerHTML = `
+        <div class="fetched-toolbar">
+          <input id="pm-fetched-search" type="text" placeholder="搜索模型（支持空格多关键词，如 deepseek flash）..." value="${escapeHtml(modalFetchedQuery)}" />
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span id="pm-fetched-count" class="hint" style="margin:0;"></span>
+            <button type="button" class="btn sm" id="pm-add-filtered-btn"></button>
+          </div>
+        </div>
+        <div id="pm-fetched-items"></div>
+      `;
+      const searchEl = document.getElementById("pm-fetched-search");
+      searchEl.oninput = () => {
+        modalFetchedQuery = searchEl.value;
+        renderFetchedItems();
+      };
+      document.getElementById("pm-add-filtered-btn").onclick = () => {
+        const filtered = modalFetchedModels.filter((m) => matchesKeywords(m, modalFetchedQuery));
+        let added = 0;
+        for (const m of filtered) {
+          if (!modalModels.includes(m)) {
+            modalModels.push(m);
+            added++;
+          }
+        }
+        renderModalModels();
+        toast(added > 0 ? `已加入 ${added} 个模型` : "当前匹配模型已全部在列表中");
+      };
+      renderFetchedItems();
+      searchEl.focus();
+    }
+
+    function renderFetchedItems() {
+      const itemsEl = document.getElementById("pm-fetched-items");
+      const countEl = document.getElementById("pm-fetched-count");
+      const addBtn = document.getElementById("pm-add-filtered-btn");
+      if (!itemsEl || !countEl || !addBtn) return;
+
+      const filtered = modalFetchedModels.filter((m) => matchesKeywords(m, modalFetchedQuery));
+      const isFiltered = Boolean(modalFetchedQuery.trim());
+      countEl.textContent = isFiltered
+        ? `匹配 ${filtered.length} / ${modalFetchedModels.length} 个模型（点击可切换）`
+        : `拉取到 ${modalFetchedModels.length} 个模型（点击可切换）`;
+      addBtn.textContent = isFiltered ? `导入当前 ${filtered.length} 个` : "全部导入";
+      addBtn.disabled = filtered.length === 0;
+
+      itemsEl.innerHTML = "";
+      for (const m of filtered) {
+        const item = document.createElement("div");
+        item.className = "fetched-item";
+        const added = modalModels.includes(m);
+        item.innerHTML = `<span>${escapeHtml(m)}</span><span class="badge ${added ? "ok" : "neutral"}">${added ? "已加入" : "+ 加入"}</span>`;
+        item.onclick = () => {
+          const idx = modalModels.indexOf(m);
+          if (idx === -1) modalModels.push(m);
+          else modalModels.splice(idx, 1);
+          renderModalModels();
+        };
+        itemsEl.appendChild(item);
+      }
+    }
+
+    async function fetchModelsInModal() {
+      const baseUrl = document.getElementById("pm-baseurl").value.trim();
+      if (!baseUrl) {
+        toast("请先填写 Base URL", true);
+        return;
+      }
+      const box = document.getElementById("pm-fetched-box");
+      box.classList.remove("hidden");
+      box.innerHTML = '<span class="hint" style="display:block;padding-top:8px;">正在向接口请求模型列表...</span>';
+      try {
+        const res = await api("/api/provider/models", {
+          method: "POST",
+          body: JSON.stringify({
+            id: document.getElementById("pm-id").value || undefined,
+            protocol: document.getElementById("pm-protocol").value,
+            baseUrl,
+            apiKey: document.getElementById("pm-apikey").value,
+            clearApiKey: document.getElementById("pm-clearkey").checked,
+            headers: document.getElementById("pm-headers").value
+          })
+        });
+        modalFetchedModels = res.models || [];
+        modalFetchedQuery = "";
+        renderFetchedModels();
+      } catch (e) {
+        modalFetchedModels = [];
+        box.innerHTML = `<span class="hint" style="display:block;padding-top:8px;color:var(--danger);">拉取失败：${escapeHtml(e.message)}</span>`;
+      }
+    }
+
+    async function saveProviderModal(alsoMountAll) {
+      const payload = {
+        id: document.getElementById("pm-id").value || undefined,
+        preset: document.getElementById("pm-preset").value || "custom",
+        name: document.getElementById("pm-name").value.trim(),
+        tag: document.getElementById("pm-tag").value.trim() || "自定义",
+        protocol: document.getElementById("pm-protocol").value,
+        baseUrl: document.getElementById("pm-baseurl").value.trim(),
+        apiKey: document.getElementById("pm-apikey").value,
+        clearApiKey: document.getElementById("pm-clearkey").checked,
+        headers: document.getElementById("pm-headers").value.trim(),
+        models: modalModels
+      };
+      try {
+        const res = await api("/api/provider", { method: "POST", body: JSON.stringify(payload) });
+        state = res.state;
+        if (alsoMountAll && modalModels.length > 0) {
+          const mRes = await api("/api/native/mount", {
+            method: "POST",
+            body: JSON.stringify({ providerId: res.provider.id, modelNames: modalModels, removeDemos: true })
+          });
+          state = mRes.state;
+        }
+        closeProviderModal();
+        renderAll();
+        toast(alsoMountAll ? `已保存渠道并将 ${modalModels.length} 个模型挂载到原生菜单！` : ("已保存渠道：" + res.provider.name));
+      } catch (e) {
+        toast("保存失败：" + e.message, true);
+      }
+    }
+
+    // Tab 3: Runtime Patch
+    function renderPatchStatus() {
+      const ps = state.patchStatus || {};
+      const badge = document.getElementById("patch-badge");
+      if (ps.patched) {
+        badge.textContent = `✅ 已注入星轨运行时 (${ps.appVersion || "已生效"})`;
+        badge.className = "badge ok";
+      } else {
+        badge.textContent = "未检测到补丁状态记录";
+        badge.className = "badge warn";
+      }
+      const resInput = document.getElementById("patch-res-dir");
+      if (!resInput.value && ps.resourcesDir) {
+        resInput.value = ps.resourcesDir;
+      }
+      document.getElementById("patch-details").innerHTML = `
+        <div>• <strong>反重力资源目录：</strong><code>${escapeHtml(ps.resourcesDir || "未找到")}</code> (${ps.asarExists ? "已找到 app.asar" : "未找到 app.asar"})</div>
+        <div>• <strong>底层补丁状态：</strong>${ps.patched ? `已激活（备份快照：<code>${escapeHtml(ps.backupId)}</code>）` : "尚未在此目录检测到补丁记录"}</div>
+        <div>• <strong>猫娘挂件备份检测：</strong>${ps.nekoBackupExists ? "✅ 已检测到猫娘备份文件，星轨补丁与猫娘挂件完全共存" : "无独立猫娘备份"}</div>
+        <div>• <strong>原生模型配置文件：</strong><code>${escapeHtml(ps.customModelsPath || "")}</code></div>
+      `;
+    }
+
+    async function generatePatchBat(action) {
+      const resourcesDir = document.getElementById("patch-res-dir").value.trim();
+      try {
+        const res = await api("/api/patch/generate-bat", {
+          method: "POST",
+          body: JSON.stringify({ resourcesDir, action })
+        });
+        toast("已在桌面生成脚本：" + res.result.batPath);
+      } catch (e) {
+        toast("生成失败：" + e.message, true);
+      }
+    }
+
+    try { applyTheme(localStorage.getItem("ao_console_theme") || "dark"); } catch {}
+    refreshAll().catch((e) => toast("加载苍蓝星轨失败：" + e.message, true));
+  </script>
+</body>
+</html>

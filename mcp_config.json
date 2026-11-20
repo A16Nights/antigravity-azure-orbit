@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "azure-orbit": {
+      "command": "node",
+      "args": ["./mcp-server.mjs"]
+    }
+  }
+}
