@@ -522,11 +522,20 @@
       </div>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin:8px 0;">
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-          <input id="nm-thinking" type="checkbox" style="width:auto;" /> 支持思考/推理 (Thinking)
+          <input id="nm-thinking" type="checkbox" style="width:auto;" onchange="document.getElementById('nm-efforts-wrap').classList.toggle('hidden', !this.checked)" /> 支持思考/推理 (Thinking)
         </label>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
           <input id="nm-vision" type="checkbox" style="width:auto;" /> 支持图片视觉 (Vision)
         </label>
+      </div>
+      <div id="nm-efforts-wrap" class="field" style="padding:10px 12px;background:var(--panel-2);border-radius:8px;border:1px solid var(--border);">
+        <label style="margin-bottom:6px;color:var(--text);font-weight:600;">左下角菜单思考档位二级子菜单（勾选 2 项及以上即自动折叠为官方同款 <code>&gt;</code> 档位菜单）</label>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin:0;"><input type="checkbox" class="nm-effort-cb" value="low" style="width:auto;" /> Low (低)</label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin:0;"><input type="checkbox" class="nm-effort-cb" value="medium" style="width:auto;" /> Medium (中)</label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin:0;"><input type="checkbox" class="nm-effort-cb" value="high" style="width:auto;" /> High (高)</label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin:0;"><input type="checkbox" class="nm-effort-cb" value="xhigh" style="width:auto;" /> Extra (极高 xhigh)</label>
+        </div>
       </div>
       <div class="modal-foot">
         <button class="btn" onclick="closeNativeModal()">取消</button>
@@ -654,7 +663,9 @@
               <span class="item-name">${escapeHtml(m.displayName || m.externalModelName || m.name)}</span>
               <span class="tag-pill">${escapeHtml(m.apiFormat || m.provider || "openai")}</span>
               <span class="badge neutral">槽位 ${escapeHtml(m.placeholderSlot)}</span>
-              ${m.supportsThinking ? '<span class="badge">Thinking</span>' : ""}
+              ${m.supportsThinking && Array.isArray(m.efforts) && m.efforts.length >= 2
+                ? `<span class="badge ok">思考档位: ${escapeHtml(m.efforts.map((e) => ({ low: "Low", medium: "Medium", high: "High", xhigh: "Extra" }[e] || e)).join(" / "))} ▸</span>`
+                : (m.supportsThinking ? '<span class="badge">Thinking</span>' : "")}
               ${m.supportsVision ? '<span class="badge">Vision</span>' : ""}
               ${m.isDemo ? '<span class="badge warn">默认示例（建议清理）</span>' : ""}
             </div>
@@ -749,6 +760,11 @@
       document.getElementById("nm-apikey").value = "";
       document.getElementById("nm-thinking").checked = Boolean(m.supportsThinking);
       document.getElementById("nm-vision").checked = Boolean(m.supportsVision);
+      document.getElementById("nm-efforts-wrap").classList.toggle("hidden", !m.supportsThinking);
+      const activeEfforts = (Array.isArray(m.efforts) && m.efforts.length > 0) ? m.efforts : ["low", "medium", "high"];
+      document.querySelectorAll(".nm-effort-cb").forEach((cb) => {
+        cb.checked = activeEfforts.includes(cb.value);
+      });
       document.getElementById("native-modal").classList.remove("hidden");
     }
 
@@ -759,6 +775,9 @@
     async function saveNativeModal() {
       const rawCtx = document.getElementById("nm-ctx").value.trim();
       const rawOut = document.getElementById("nm-maxout").value.trim();
+      const efforts = Array.from(document.querySelectorAll(".nm-effort-cb"))
+        .filter((cb) => cb.checked)
+        .map((cb) => cb.value);
       const payload = {
         name: document.getElementById("nm-name").value,
         displayName: document.getElementById("nm-display").value.trim(),
@@ -768,7 +787,8 @@
         maxOutputTokens: rawOut === "" ? "" : Number(rawOut),
         apiKey: document.getElementById("nm-apikey").value.trim() || undefined,
         supportsThinking: document.getElementById("nm-thinking").checked,
-        supportsVision: document.getElementById("nm-vision").checked
+        supportsVision: document.getElementById("nm-vision").checked,
+        efforts
       };
       try {
         const res = await api("/api/native/update", { method: "POST", body: JSON.stringify(payload) });
