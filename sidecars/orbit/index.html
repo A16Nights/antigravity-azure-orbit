@@ -625,9 +625,56 @@
       renderAll();
     }
 
+    function groupNativeModelsForUi(rawList) {
+      const effRe = /^(.*?)\s*\((low|medium|high|xhigh)(?:\s+thinking)?\)\s*$/i;
+      const nameRe = /^(.*?)--(low|medium|high|xhigh)$/i;
+      const order = ["low", "medium", "high", "xhigh"];
+      const map = new Map();
+
+      for (const m of rawList || []) {
+        const baseName = (nameRe.exec(m.name || "")?.[1]) || m.name || "";
+        const dispMatch = effRe.exec(m.displayName || "");
+        const baseDisplay = dispMatch ? dispMatch[1].trim() : (m.displayName || m.externalModelName || baseName);
+        const effFromName = nameRe.exec(m.name || "")?.[2]?.toLowerCase();
+        const effFromDisp = dispMatch?.[2]?.toLowerCase();
+        const singleEff = (m.reasoningEffort || effFromName || effFromDisp || "").toLowerCase();
+        const itemEfforts = Array.isArray(m.efforts) && m.efforts.length
+          ? m.efforts
+          : (order.includes(singleEff) ? [singleEff] : []);
+        const key = `${baseName}::${m.externalModelName || ""}`;
+
+        if (!map.has(key)) {
+          map.set(key, {
+            ...m,
+            name: baseName,
+            displayName: baseDisplay,
+            efforts: [...itemEfforts],
+            _slots: m.placeholderSlot ? [m.placeholderSlot] : []
+          });
+        } else {
+          const g = map.get(key);
+          if (m.enabled !== false) g.enabled = true;
+          for (const ef of itemEfforts) {
+            if (!g.efforts.includes(ef)) g.efforts.push(ef);
+          }
+          if (m.placeholderSlot && !g._slots.includes(m.placeholderSlot)) {
+            g._slots.push(m.placeholderSlot);
+          }
+        }
+      }
+
+      return Array.from(map.values()).map((g) => ({
+        ...g,
+        efforts: order.filter((e) => g.efforts.includes(e)),
+        placeholderSlot: g._slots.join(", ") || "待分配"
+      }));
+    }
+
     function renderAll() {
-      const activeNative = (state.nativeModels || []).filter((m) => m.enabled !== false && !m.isDemo).length;
-      const totalNative = (state.nativeModels || []).length;
+      const groupedModels = groupNativeModelsForUi(state.nativeModels);
+      state.nativeModels = groupedModels;
+      const activeNative = groupedModels.filter((m) => m.enabled !== false && !m.isDemo).length;
+      const totalNative = groupedModels.length;
       const badge = document.getElementById("summary-badge");
       badge.textContent = `已挂载 ${activeNative} 个主模型（共 ${totalNative} 项）`;
       badge.className = "badge " + (activeNative > 0 ? "ok" : "warn");
