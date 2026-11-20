@@ -359,6 +359,7 @@
       <span id="summary-badge" class="badge">加载中...</span>
     </div>
     <div class="header-actions">
+      <button class="btn sm" onclick="refreshNativeMenuNow()" title="立即通知反重力底层重新拉取模型列表">↻ 刷新左下角菜单</button>
       <button class="btn sm" onclick="openCustomModelsFile()" title="在资源管理器中定位 custom_models.json">打开模型文件</button>
       <button class="btn sm" onclick="copyWebUrl()" title="复制浏览器独立全屏链接">复制全屏地址</button>
       <button id="theme-btn" class="btn sm" onclick="toggleTheme()">🌙 暗色</button>
@@ -609,6 +610,21 @@
     function copyWebUrl() {
       const url = state.webUrl || location.href;
       navigator.clipboard?.writeText(url).then(() => toast("已复制全屏访问地址")).catch(() => toast(url));
+    }
+
+    async function refreshNativeMenuNow() {
+      try {
+        const res = await api("/api/native/refresh", { method: "POST", body: "{}" });
+        state = res.state;
+        renderAll();
+        if (res.refresh?.refreshed) {
+          toast(`✅ 已通知反重力底层热更新（共 ${res.refresh.totalMenuModels} 项），按一次 Ctrl+R 即可立刻看到最新菜单！`);
+        } else {
+          toast("已尝试刷新，若菜单未更新请按一次 Ctrl+R");
+        }
+      } catch (e) {
+        toast(e.message, true);
+      }
     }
 
     async function openCustomModelsFile() {

@@ -119,7 +119,8 @@ const server = http.createServer(async (req, res) => {
           store.cleanDemoModels();
         }
         const result = await store.importFromOrchestrator(Boolean(body.alsoMountModels));
-        sendJson(res, 200, { result, state: buildState() });
+        const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+        sendJson(res, 200, { result, refresh, state: buildState() });
         return;
       }
       if (req.method === "POST" && pathname === "/api/native/mount") {
@@ -130,28 +131,38 @@ const server = http.createServer(async (req, res) => {
             modelNames: body.modelNames,
             removeDemos: Boolean(body.removeDemos)
           });
-          sendJson(res, 200, { result, state: buildState() });
+          const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+          sendJson(res, 200, { result, refresh, state: buildState() });
         } else {
           const model = store.mountModelToNativeMenu(body);
-          sendJson(res, 200, { model, state: buildState() });
+          const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+          sendJson(res, 200, { model, refresh, state: buildState() });
         }
         return;
       }
       if (req.method === "POST" && pathname === "/api/native/update") {
         const body = await readBody(req);
         const model = store.updateNativeModel(body.name, body);
-        sendJson(res, 200, { model, state: buildState() });
+        const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+        sendJson(res, 200, { model, refresh, state: buildState() });
         return;
       }
       if (req.method === "POST" && pathname === "/api/native/unmount") {
         const body = await readBody(req);
         store.unmountNativeModel(body.name);
-        sendJson(res, 200, { ok: true, state: buildState() });
+        const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+        sendJson(res, 200, { ok: true, refresh, state: buildState() });
         return;
       }
       if (req.method === "POST" && pathname === "/api/native/clean-demos") {
         const result = store.cleanDemoModels();
-        sendJson(res, 200, { result, state: buildState() });
+        const refresh = await store.refreshAntigravityModels().catch(() => ({ refreshed: false }));
+        sendJson(res, 200, { result, refresh, state: buildState() });
+        return;
+      }
+      if (req.method === "POST" && pathname === "/api/native/refresh") {
+        const refresh = await store.refreshAntigravityModels();
+        sendJson(res, 200, { refresh, state: buildState() });
         return;
       }
       if (req.method === "POST" && pathname === "/api/patch/generate-bat") {
