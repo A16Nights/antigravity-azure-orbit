@@ -2,7 +2,7 @@
 
 面向 **Google Antigravity** 的原生主模型接入与侧栏可视化管理插件：**把外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / 本地聚合网关 / Ollama）直接挂载进反重力客户端输入框左下角的「原生模型下拉菜单」中作为主脑使用**。
 
-与 **[苍蓝协奏台（External Orchestrator）](https://github.com/A16Nights/external-orchestrator)** 组成「苍蓝双子」：
+与 **[苍蓝协奏台（External Orchestrator）](https://github.com/A16Nights/antigravity-external-orchestrator)** 组成「苍蓝双子」：
 - **苍蓝协奏台**：主脑规划 + 委派外部模型干脏活累活（省主脑 Token）
 - **苍蓝星轨**：让外部模型直接驶入反重力左下角的原生模型下拉菜单，亲自担任主脑对话！
 
@@ -29,10 +29,10 @@
 
 ```powershell
 # Windows (PowerShell)
-git clone https://github.com/A16Nights/azure-orbit.git "$env:USERPROFILE\.gemini\config\plugins\azure-orbit"
+git clone https://github.com/A16Nights/antigravity-azure-orbit.git "$env:USERPROFILE\.gemini\config\plugins\azure-orbit"
 
 # macOS / Linux
-git clone https://github.com/A16Nights/azure-orbit.git ~/.gemini/config/plugins/azure-orbit
+git clone https://github.com/A16Nights/antigravity-azure-orbit.git ~/.gemini/config/plugins/azure-orbit
 ```
 
 2. 重启或重载 Antigravity，打开右侧栏 **「苍蓝星轨」**。
