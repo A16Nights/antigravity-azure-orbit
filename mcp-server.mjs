@@ -74,7 +74,7 @@ async function dispatchTool(name, args = {}) {
         sidecarLink: "[苍蓝星轨](sidecar://azure-orbit/orbit/)"
       };
     case "orbit_mount_models":
-      return store.mountBatchModels({
+      return await store.mountBatchModels({
         providerId: args.providerId,
         modelNames: args.modelNames,
         removeDemos: Boolean(args.removeDemos)
@@ -94,7 +94,7 @@ async function dispatchTool(name, args = {}) {
       if (args.removeDemos !== false) {
         store.cleanDemoModels();
       }
-      const syncRes = store.importFromOrchestrator(args.alsoMountModels !== false);
+      const syncRes = await store.importFromOrchestrator(args.alsoMountModels !== false);
       return {
         ...syncRes,
         nativeModels: store.listNativeModels(),

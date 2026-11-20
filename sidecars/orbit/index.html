@@ -509,11 +509,11 @@
         </div>
         <div class="field">
           <label>上下文窗口 (Context Window)</label>
-          <input id="nm-ctx" type="number" min="4096" max="2000000" />
+          <input id="nm-ctx" type="number" min="4096" max="4000000" placeholder="留空则用渠道值或默认 1048576 (1M)" />
         </div>
         <div class="field">
           <label>最大输出 Tokens (需小于上下文窗口)</label>
-          <input id="nm-maxout" type="number" min="1024" max="200000" />
+          <input id="nm-maxout" type="number" min="512" max="500000" placeholder="留空则用渠道值或默认 131072 (128K)" />
         </div>
       </div>
       <div class="field">
@@ -660,8 +660,9 @@
             </div>
             <div class="item-sub">
               <span>模型 ID: <code>${escapeHtml(m.externalModelName || m.name)}</code></span>
+              <span>上下文: <strong>${formatTokenCount(m.contextWindow || 1048576)}</strong></span>
+              <span>最大输出: <strong>${formatTokenCount(m.maxOutputTokens || 131072)}</strong></span>
               <span>端点: ${escapeHtml(m.apiUrl)}</span>
-              <span>密钥: ${escapeHtml(m.apiKeyMasked || "未设(免密)")}</span>
             </div>
           </div>
           <div class="item-actions">
@@ -727,6 +728,15 @@
       }
     }
 
+    function formatTokenCount(n) {
+      const num = Number(n) || 0;
+      if (!num) return "-";
+      if (num === 1048576 || num === 1000000) return `1M (${num.toLocaleString()})`;
+      if (num % 1024 === 0 && num >= 1024) return `${Math.round(num / 1024)}K (${num.toLocaleString()})`;
+      if (num % 1000 === 0 && num >= 1000) return `${Math.round(num / 1000)}K (${num.toLocaleString()})`;
+      return num.toLocaleString();
+    }
+
     function openNativeModal(name) {
       const m = (state.nativeModels || []).find((x) => x.name === name);
       if (!m) return;
@@ -734,8 +744,8 @@
       document.getElementById("nm-display").value = m.displayName || m.externalModelName || "";
       document.getElementById("nm-ext").value = m.externalModelName || "";
       document.getElementById("nm-apiurl").value = m.apiUrl || "";
-      document.getElementById("nm-ctx").value = m.contextWindow || 128000;
-      document.getElementById("nm-maxout").value = m.maxOutputTokens || 16384;
+      document.getElementById("nm-ctx").value = m.contextWindow || "";
+      document.getElementById("nm-maxout").value = m.maxOutputTokens || "";
       document.getElementById("nm-apikey").value = "";
       document.getElementById("nm-thinking").checked = Boolean(m.supportsThinking);
       document.getElementById("nm-vision").checked = Boolean(m.supportsVision);
@@ -747,13 +757,15 @@
     }
 
     async function saveNativeModal() {
+      const rawCtx = document.getElementById("nm-ctx").value.trim();
+      const rawOut = document.getElementById("nm-maxout").value.trim();
       const payload = {
         name: document.getElementById("nm-name").value,
         displayName: document.getElementById("nm-display").value.trim(),
         externalModelName: document.getElementById("nm-ext").value.trim(),
         apiUrl: document.getElementById("nm-apiurl").value.trim(),
-        contextWindow: Number(document.getElementById("nm-ctx").value) || 128000,
-        maxOutputTokens: Number(document.getElementById("nm-maxout").value) || 16384,
+        contextWindow: rawCtx === "" ? "" : Number(rawCtx),
+        maxOutputTokens: rawOut === "" ? "" : Number(rawOut),
         apiKey: document.getElementById("nm-apikey").value.trim() || undefined,
         supportsThinking: document.getElementById("nm-thinking").checked,
         supportsVision: document.getElementById("nm-vision").checked

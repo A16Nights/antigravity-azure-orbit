@@ -118,14 +118,14 @@ const server = http.createServer(async (req, res) => {
         if (body.removeDemos !== false) {
           store.cleanDemoModels();
         }
-        const result = store.importFromOrchestrator(Boolean(body.alsoMountModels));
+        const result = await store.importFromOrchestrator(Boolean(body.alsoMountModels));
         sendJson(res, 200, { result, state: buildState() });
         return;
       }
       if (req.method === "POST" && pathname === "/api/native/mount") {
         const body = await readBody(req);
         if (Array.isArray(body.modelNames)) {
-          const result = store.mountBatchModels({
+          const result = await store.mountBatchModels({
             providerId: body.providerId,
             modelNames: body.modelNames,
             removeDemos: Boolean(body.removeDemos)
