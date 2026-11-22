@@ -9,7 +9,7 @@ description: >-
 
 # 苍蓝星轨 · Azure Orbit
 
-本插件将外部大模型 API（DeepSeek、OpenAI 兼容、Anthropic 兼容、本地聚合网关、Ollama）直接挂载进反重力客户端**输入框左下角的原生模型下拉菜单**中作为主脑使用，并自带右侧可视化管理面板（`[苍蓝星轨](sidecar://azure-orbit/orbit/)`）。
+本插件将外部大模型 API（DeepSeek、OpenAI 兼容、Anthropic 兼容、本地聚合网关、Ollama）直接挂载进Antigravity客户端**输入框左下角的原生模型下拉菜单**中作为主脑使用，并自带右侧可视化管理面板（`[苍蓝星轨](sidecar://azure-orbit/orbit/)`）。
 
 ## 数据与配置位置
 - 原生主模型配置文件：`~/.gemini/antigravity/custom_models.json`（底层代理每次请求实时读取，修改后无需重启客户端即可生效；按 `Ctrl+R` 可立即刷新左下角菜单列表）
@@ -21,4 +21,4 @@ description: >-
 2. `orbit_mount_models(providerId, modelNames, removeDemos?)`：将指定渠道的模型挂载到左下角原生下拉菜单。
 3. `orbit_unmount_model(name?, cleanDemos?)`：从左下角原生下拉菜单移除模型，或一键清理首次生成的 3 个默认示例模型。
 4. `orbit_sync_from_orchestrator(alsoMountModels?, removeDemos?)`：一键从「苍蓝协奏台」（`external-orchestrator`）同步已配好的渠道与模型并直接挂载进左下角原生下拉菜单。
-5. `orbit_patch_status`：检查反重力 `resources/app.asar` 是否已注入星轨底层运行时补丁。
+5. `orbit_patch_status`：检查Antigravity `resources/app.asar` 是否已注入星轨底层运行时补丁。

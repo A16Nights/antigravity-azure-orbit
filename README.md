@@ -1,10 +1,10 @@
 # 🪐 苍蓝星轨（Azure Orbit）
 
-面向 **Google Antigravity** 的原生主模型接入与侧栏可视化管理插件：**把外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / 本地聚合网关 / Ollama）直接挂载进反重力客户端输入框左下角的「原生模型下拉菜单」中作为主脑使用**。
+面向 **Google Antigravity** 的原生主模型接入与侧栏可视化管理插件：**把外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / 本地聚合网关 / Ollama）直接挂载进Antigravity客户端输入框左下角的「原生模型下拉菜单」中作为主脑使用**。
 
 与 **[苍蓝协奏台（External Orchestrator）](https://github.com/A16Nights/antigravity-external-orchestrator)** 组成「苍蓝双子」：
 - **苍蓝协奏台**：主脑规划 + 委派外部模型干脏活累活（省主脑 Token）
-- **苍蓝星轨**：让外部模型直接驶入反重力左下角的原生模型下拉菜单，亲自担任主脑对话！
+- **苍蓝星轨**：让外部模型直接驶入Antigravity左下角的原生模型下拉菜单，亲自担任主脑对话！
 
 ---
 
@@ -36,7 +36,7 @@ git clone https://github.com/A16Nights/antigravity-azure-orbit.git ~/.gemini/con
 ```
 
 2. 重启或重载 Antigravity，打开右侧栏 **「苍蓝星轨」**。
-3. 首次在新设备上使用时，切到 **「星轨引擎（底层补丁）」** 页，点击 **「在桌面生成安装/更新星轨补丁.bat」**，退出反重力后双击运行一次即可激活底层代理。
+3. 首次在新设备上使用时，切到 **「星轨引擎（底层补丁）」** 页，点击 **「在桌面生成安装/更新星轨补丁.bat」**，退出Antigravity后双击运行一次即可激活底层代理。
 4. 在 **「原生主模型」** 或 **「模型渠道」** 页挂载你的模型（或从苍蓝协奏台一键同步），按 `Ctrl+R` 刷新窗口，即可在输入框左下角的原生模型下拉菜单中直接选用！
 
 ---
@@ -49,7 +49,7 @@ git clone https://github.com/A16Nights/antigravity-azure-orbit.git ~/.gemini/con
 | `orbit_mount_models` | 将指定渠道的一个或多个模型挂载到左下角原生下拉菜单 |
 | `orbit_unmount_model` | 从左下角原生下拉菜单移除模型，或一键清理默认示例模型 |
 | `orbit_sync_from_orchestrator` | 一键从「苍蓝协奏台」同步渠道与模型并挂载到原生菜单 |
-| `orbit_patch_status` | 检查反重力 `app.asar` 的星轨底层补丁状态 |
+| `orbit_patch_status` | 检查Antigravity `app.asar` 的星轨底层补丁状态 |
 
 ---
 

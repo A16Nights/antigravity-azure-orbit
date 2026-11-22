@@ -381,7 +381,7 @@
       <span id="summary-badge" class="badge">加载中...</span>
     </div>
     <div class="header-actions">
-      <button class="btn sm" onclick="refreshNativeMenuNow()" title="立即通知反重力底层重新拉取模型列表">↻ 刷新左下角菜单</button>
+      <button class="btn sm" onclick="refreshNativeMenuNow()" title="立即通知Antigravity底层重新拉取模型列表">↻ 刷新左下角菜单</button>
       <button class="btn sm" onclick="openCustomModelsFile()" title="在资源管理器中定位 custom_models.json">打开模型文件</button>
       <button class="btn sm" onclick="copyWebUrl()" title="复制浏览器独立全屏链接">复制全屏地址</button>
       <button id="refresh-btn" class="icon-btn" onclick="refreshAllData()" title="刷新面板数据">↻</button>
@@ -398,7 +398,7 @@
   <main>
     <!-- Tab 1: Native Menu Models -->
     <section id="tab-native">
-      <p class="subtitle">这里列出的模型会直接注入反重力输入框**左下角的原生模型下拉菜单**中作为主脑使用（底层代理每次请求实时读取，修改后立即生效；若左下角菜单尚未刷新列表，按一次 <code>Ctrl+R</code> 即可立刻刷出）。</p>
+      <p class="subtitle">这里列出的模型会直接注入Antigravity输入框**左下角的原生模型下拉菜单**中作为主脑使用（底层代理每次请求实时读取，修改后立即生效；若左下角菜单尚未刷新列表，按一次 <code>Ctrl+R</code> 即可立刻刷出）。</p>
       <div class="toolbar-row">
         <div style="display:flex;flex-wrap:wrap;gap:6px;">
           <button class="btn primary sm" onclick="syncFromOrchestrator(true)">⚡ 从苍蓝协奏台一键同步并挂载</button>
@@ -424,7 +424,7 @@
 
     <!-- Tab 3: Runtime Patch -->
     <section id="tab-patch" class="hidden">
-      <p class="subtitle">管理反重力客户端 <code>app.asar</code> 的星轨底层代理补丁（已适配 2.32+/2.33.0+ 的 <code>...spread</code> 启动布局及中文界面，并与猫娘挂件共存）。</p>
+      <p class="subtitle">管理Antigravity客户端 <code>app.asar</code> 的星轨底层代理补丁（已适配 2.32+/2.33.0+ 的 <code>...spread</code> 启动布局及中文界面，并与猫娘挂件共存）。</p>
       <div class="card">
         <h3>
           <span>当前客户端补丁状态</span>
@@ -432,14 +432,14 @@
         </h3>
         <div id="patch-details" style="font-size:12.5px;color:var(--muted);line-height:1.8;"></div>
         <div class="field" style="margin-top:12px;">
-          <label>反重力 resources 目录路径</label>
+          <label>Antigravity resources 目录路径</label>
           <input id="patch-res-dir" type="text" placeholder="例如：D:\AI\antigravity\resources" />
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
           <button class="btn primary" onclick="generatePatchBat('install')">📦 在桌面生成「安装/更新星轨补丁.bat」</button>
           <button class="btn danger" onclick="generatePatchBat('restore')">↩ 在桌面生成「还原原版客户端.bat」</button>
         </div>
-        <div class="hint" style="margin-top:8px;">说明：因为反重力运行时 <code>app.asar</code> 被 Windows 进程占用，点击上方按钮会在桌面生成纯 ASCII 一键脚本，退出反重力后双击即可完成注入或还原。</div>
+        <div class="hint" style="margin-top:8px;">说明：因为Antigravity运行时 <code>app.asar</code> 被 Windows 进程占用，点击上方按钮会在桌面生成纯 ASCII 一键脚本，退出Antigravity后双击即可完成注入或还原。</div>
       </div>
     </section>
   </main>
@@ -656,7 +656,7 @@
         state = res.state;
         renderAll();
         if (res.refresh?.refreshed) {
-          toast(`✅ 已通知反重力底层热更新（共 ${res.refresh.totalMenuModels} 项），按一次 Ctrl+R 即可立刻看到最新菜单！`);
+          toast(`✅ 已通知Antigravity底层热更新（共 ${res.refresh.totalMenuModels} 项），按一次 Ctrl+R 即可立刻看到最新菜单！`);
         } else {
           toast("已尝试刷新，若菜单未更新请按一次 Ctrl+R");
         }
@@ -1013,8 +1013,80 @@
       }
     }
 
+    function azureConfirm({ title = "确认操作", message = "", note = "", okText = "确认", cancelText = "取消", danger = true } = {}) {
+      return new Promise((resolve) => {
+        if (!document.getElementById("az-confirm-style")) {
+          const st = document.createElement("style");
+          st.id = "az-confirm-style";
+          st.textContent = `
+            .az-confirm-mask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.56);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;}
+            .az-confirm-box{width:100%;max-width:390px;background:var(--card,var(--panel,#181e2e));color:var(--text,#e6edf7);border:1px solid var(--border,rgba(148,163,184,0.24));border-radius:12px;padding:16px;box-shadow:0 18px 42px rgba(0,0,0,0.42);}
+            .az-confirm-box h3{margin:0 0 10px;font-size:15px;font-weight:600;color:var(--text,#e6edf7);}
+            .az-confirm-msg{margin:0 0 6px;font-size:13px;line-height:1.6;color:var(--text,#e6edf7);}
+            .az-confirm-note{margin:0 0 4px;font-size:12px;line-height:1.5;color:var(--muted,#94a3b8);}
+            .az-confirm-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+            .az-confirm-btn{padding:6px 13px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid var(--border,rgba(148,163,184,0.28));background:var(--panel-2,rgba(148,163,184,0.1));color:var(--text,#e6edf7);transition:all .15s ease;}
+            .az-confirm-btn:hover{border-color:var(--accent,#3b82f6);transform:translateY(-1px);}
+            .az-confirm-btn.danger{background:rgba(247,118,142,0.16);border-color:var(--danger,#f7768e);color:var(--danger,#f7768e);}
+            .az-confirm-btn.danger:hover{background:var(--danger,#f7768e);color:#fff;}
+            .az-confirm-btn.primary{background:var(--accent,#3b82f6);border-color:var(--accent,#3b82f6);color:#fff;}
+          `;
+          document.head.appendChild(st);
+        }
+        const mask = document.createElement("div");
+        mask.className = "az-confirm-mask";
+        const box = document.createElement("div");
+        box.className = "az-confirm-box";
+        box.setAttribute("role", "dialog");
+        box.setAttribute("aria-modal", "true");
+        const h3 = document.createElement("h3");
+        h3.textContent = title;
+        const pMsg = document.createElement("p");
+        pMsg.className = "az-confirm-msg";
+        pMsg.textContent = message;
+        box.appendChild(h3);
+        box.appendChild(pMsg);
+        if (note) {
+          const pNote = document.createElement("p");
+          pNote.className = "az-confirm-note";
+          pNote.textContent = note;
+          box.appendChild(pNote);
+        }
+        const actions = document.createElement("div");
+        actions.className = "az-confirm-actions";
+        const btnCancel = document.createElement("button");
+        btnCancel.className = "az-confirm-btn";
+        btnCancel.textContent = cancelText;
+        const btnOk = document.createElement("button");
+        btnOk.className = "az-confirm-btn " + (danger ? "danger" : "primary");
+        btnOk.textContent = okText;
+        actions.appendChild(btnCancel);
+        actions.appendChild(btnOk);
+        box.appendChild(actions);
+        mask.appendChild(box);
+        const close = (val) => {
+          window.removeEventListener("keydown", onKey);
+          mask.remove();
+          resolve(val);
+        };
+        const onKey = (e) => { if (e.key === "Escape") close(false); };
+        btnCancel.onclick = () => close(false);
+        btnOk.onclick = () => close(true);
+        mask.onclick = (e) => { if (e.target === mask) close(false); };
+        window.addEventListener("keydown", onKey);
+        document.body.appendChild(mask);
+      });
+    }
+
     async function deleteProviderAction(id, name) {
-      if (!confirm(`确定删除渠道「${name}」吗？`)) return;
+      const ok = await azureConfirm({
+        title: "确认删除渠道",
+        message: `确定要删除渠道「${name}」吗？`,
+        note: "删除后将移除该渠道配置，无法撤销。",
+        okText: "确认删除",
+        danger: true
+      });
+      if (!ok) return;
       try {
         const res = await api("/api/provider/delete", { method: "POST", body: JSON.stringify({ id }) });
         state = res.state;
@@ -1064,7 +1136,7 @@
         document.getElementById("pm-baseurl").value = src.baseUrl || "";
         document.getElementById("pm-apikey").value = "";
         document.getElementById("pm-headers").value = "";
-        document.getElementById("pm-key-hint").textContent = "密钥将保存在本地 ~/.gemini/azure-orbit/providers.json，挂载到原生菜单后由反重力自动加密保护。";
+        document.getElementById("pm-key-hint").textContent = "密钥将保存在本地 ~/.gemini/azure-orbit/providers.json，挂载到原生菜单后由Antigravity自动加密保护。";
         document.getElementById("pm-clearkey-wrap").classList.add("hidden");
         modalModels = [...(src.models || [])];
       }
@@ -1276,7 +1348,7 @@
         resInput.value = ps.resourcesDir;
       }
       document.getElementById("patch-details").innerHTML = `
-        <div>• <strong>反重力资源目录：</strong><code>${escapeHtml(ps.resourcesDir || "未找到")}</code> (${ps.asarExists ? "已找到 app.asar" : "未找到 app.asar"})</div>
+        <div>• <strong>Antigravity资源目录：</strong><code>${escapeHtml(ps.resourcesDir || "未找到")}</code> (${ps.asarExists ? "已找到 app.asar" : "未找到 app.asar"})</div>
         <div>• <strong>底层补丁状态：</strong>${ps.patched ? `已激活（备份快照：<code>${escapeHtml(ps.backupId)}</code>）` : "尚未在此目录检测到补丁记录"}</div>
         <div>• <strong>猫娘挂件备份检测：</strong>${ps.nekoBackupExists ? "✅ 已检测到猫娘备份文件，星轨补丁与猫娘挂件完全共存" : "无独立猫娘备份"}</div>
         <div>• <strong>原生模型配置文件：</strong><code>${escapeHtml(ps.customModelsPath || "")}</code></div>

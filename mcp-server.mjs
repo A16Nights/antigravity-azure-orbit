@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { getSidebarToolDefinition, getSidebarResourceDefinition, getSidebarResourceUri, handleSidebarToolCall, buildSidebarResourceReadResult } from "./lib/sidebar-nav.mjs";
 import readline from "node:readline";
 import { OrbitStore } from "./lib/orbit-store.mjs";
 
@@ -7,12 +8,12 @@ const store = new OrbitStore();
 const TOOLS = [
   {
     name: "orbit_list_models",
-    description: "列出当前已挂载到反重力左下角原生模型选择器的外部主模型、已配置的渠道列表（密钥脱敏）及底层补丁状态。",
+    description: "列出当前已挂载到Antigravity左下角原生模型选择器的外部主模型、已配置的渠道列表（密钥脱敏）及底层补丁状态。",
     inputSchema: { type: "object", properties: {} }
   },
   {
     name: "orbit_mount_models",
-    description: "将指定渠道的一个或多个模型直接挂载到反重力客户端左下角的原生模型下拉菜单中（无需重启客户端即可生效）。",
+    description: "将指定渠道的一个或多个模型直接挂载到Antigravity客户端左下角的原生模型下拉菜单中（无需重启客户端即可生效）。",
     inputSchema: {
       type: "object",
       required: ["providerId", "modelNames"],
@@ -25,11 +26,11 @@ const TOOLS = [
   },
   {
     name: "orbit_unmount_model",
-    description: "从反重力左下角原生模型下拉菜单中移除指定的已挂载外部模型（或传入 cleanDemos=true 清理默认示例模型）。",
+    description: "从Antigravity左下角原生模型下拉菜单中移除指定的已挂载外部模型（或传入 cleanDemos=true 清理默认示例模型）。",
     inputSchema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "要移除的模型内部标识（如 models/ofm/trae/deepseek-v4.1-flash）" },
+        name: { type: "string", description: "要移除的模型内部标识（如 models/deepseek/deepseek-chat）" },
         cleanDemos: { type: "boolean", description: "为 true 时一键移除默认示例模型" }
       }
     }
@@ -47,7 +48,7 @@ const TOOLS = [
   },
   {
     name: "orbit_patch_status",
-    description: "检查反重力客户端底层 app.asar 是否已安装苍蓝星轨运行时代理补丁。",
+    description: "检查Antigravity客户端底层 app.asar 是否已安装苍蓝星轨运行时代理补丁。",
     inputSchema: { type: "object", properties: {} }
   }
 ];
@@ -124,18 +125,38 @@ async function handleLine(line) {
       case "initialize":
         sendResponse(id, {
           protocolVersion: params?.protocolVersion || "2024-11-05",
-          capabilities: { tools: {} },
+          capabilities: { tools: {}, resources: {} },
           serverInfo: { name: "azure-orbit", version: "1.0.0" }
         });
         break;
       case "ping":
         sendResponse(id, {});
         break;
-      case "tools/list":
-        sendResponse(id, { tools: TOOLS });
+      case "tools/list": {
+        const sbTool = getSidebarToolDefinition("azure-orbit");
+        sendResponse(id, { tools: sbTool ? [...TOOLS, sbTool] : TOOLS });
         break;
+      }
+      case "resources/list": {
+        const sbRes = getSidebarResourceDefinition("azure-orbit");
+        sendResponse(id, { resources: sbRes ? [sbRes] : [] });
+        break;
+      }
+      case "resources/read": {
+        const uri = params?.uri;
+        if (uri === getSidebarResourceUri("azure-orbit")) {
+          sendResponse(id, buildSidebarResourceReadResult("azure-orbit"));
+        } else {
+          sendError(id, -32602, `Unknown resource: ${uri}`);
+        }
+        break;
+      }
       case "tools/call": {
         const toolName = params?.name;
+        if (toolName === "open_azure_orbit_ui") {
+          sendResponse(id, handleSidebarToolCall("azure-orbit"));
+          break;
+        }
         const toolArgs = params?.arguments || {};
         try {
           const result = await dispatchTool(toolName, toolArgs);

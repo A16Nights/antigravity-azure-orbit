@@ -2,11 +2,11 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "azure-orbit",
   "displayName": "苍蓝星轨",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "logo": "assets/logo.svg",
-  "description": "苍蓝星轨（Azure Orbit）— 将外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / 本地聚合网关 / Ollama）直接注入反重力客户端左下角原生模型选择器作为主脑使用，自带右侧可视化配置面板、多关键词模型检索、与苍蓝协奏台一键同步及 2.33.0+ 底层补丁管理。",
+  "description": "苍蓝星轨（Azure Orbit）— 将外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / 本地聚合网关 / Ollama）直接注入Antigravity客户端左下角原生模型选择器作为主脑使用，自带右侧可视化配置面板、多关键词模型检索、与苍蓝协奏台一键同步及 2.33.0+ 底层补丁管理。",
   "suggestedPrompts": [
-    "列出当前已挂载到反重力左下角原生模型菜单的外部主模型",
+    "列出当前已挂载到Antigravity左下角原生模型菜单的外部主模型",
     "把苍蓝协奏台中已配置的渠道与模型同步挂载到苍蓝星轨原生模型菜单",
     "检查当前苍蓝星轨底层运行时补丁状态并打开苍蓝星轨面板"
   ]
