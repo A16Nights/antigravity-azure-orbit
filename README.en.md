@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#mcp-tools">🧰 MCP Tools</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
+  <a href="#preview">🖼️ Preview</a> &nbsp;·&nbsp; <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#mcp-tools">🧰 MCP Tools</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
 </p>
 
 </div>
@@ -47,6 +47,28 @@ Already configured External Orchestrator? Sync all enabled providers, keys, and 
 <td width="50%" valign="top">
 <h4>🛠️ Antigravity 2.32+ / 2.33.0+ Engine</h4>
 Fully adapted to the new <code>...spread</code> (<code>baseLsArgs</code>) layout with a built-in search box inside the native dropdown and non-destructive coexisting patches.
+</td>
+</tr>
+</table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-en-dark.svg">
+  <img src="assets/readme/sec-preview-en-light.svg" alt="Interface Preview" width="100%">
+</picture>
+</h2>
+
+<table>
+<tr>
+<td width="50%" align="center" valign="top">
+  <a href="assets/readme/preview-models.png"><img src="assets/readme/preview-models.png" alt="Native Primary Models Management" width="100%"></a>
+  <br><strong>Native Primary Models</strong>
+  <br><sub>One-click sync from External Orchestrator, thinking tiers, Vision badges &amp; live search</sub>
+</td>
+<td width="50%" align="center" valign="top">
+  <a href="assets/readme/preview-providers.png"><img src="assets/readme/preview-providers.png" alt="Multi-Provider &amp; One-Click Mounting" width="100%"></a>
+  <br><strong>Multi-Provider Management</strong>
+  <br><sub>7 quick-add provider presets with single-model or batch mounting to the native dropdown</sub>
 </td>
 </tr>
 </table>

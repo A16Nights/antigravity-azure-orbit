@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#mcp-tools">🧰 MCP 工具</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
+  <a href="#preview">🖼️ 界面预览</a> &nbsp;·&nbsp; <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#mcp-tools">🧰 MCP 工具</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
 </p>
 
 </div>
@@ -47,6 +47,28 @@
 <td width="50%" valign="top">
 <h4>🛠️ 适配 2.32+ / 2.33.0+ 补丁引擎</h4>
 完整适配新版 <code>...spread</code>（<code>baseLsArgs</code>）启动参数布局，支持原生中/英文下拉菜单实时搜索框与非破坏性共存注入。
+</td>
+</tr>
+</table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-dark.svg">
+  <img src="assets/readme/sec-preview-light.svg" alt="界面预览" width="100%">
+</picture>
+</h2>
+
+<table>
+<tr>
+<td width="50%" align="center" valign="top">
+  <a href="assets/readme/preview-models.png"><img src="assets/readme/preview-models.png" alt="原生主模型挂载管理" width="100%"></a>
+  <br><strong>原生主模型挂载管理</strong>
+  <br><sub>一键从苍蓝协奏台同步并挂载到左下角原生菜单，支持思考档位、Vision 标注与实时检索</sub>
+</td>
+<td width="50%" align="center" valign="top">
+  <a href="assets/readme/preview-providers.png"><img src="assets/readme/preview-providers.png" alt="多渠道管理与一键挂载" width="100%"></a>
+  <br><strong>多渠道管理与一键挂载</strong>
+  <br><sub>7 大主流渠道快速添加、单模型或整渠道一键挂载到左下角原生下拉菜单</sub>
 </td>
 </tr>
 </table>
