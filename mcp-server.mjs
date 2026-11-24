@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 import { getSidebarToolDefinition, getSidebarResourceDefinition, getSidebarResourceUri, handleSidebarToolCall, buildSidebarResourceReadResult } from "./lib/sidebar-nav.mjs";
+import { readPluginVersion } from "./lib/update-checker.mjs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import readline from "node:readline";
 import { OrbitStore } from "./lib/orbit-store.mjs";
 
+const PLUGIN_ROOT = path.dirname(fileURLToPath(import.meta.url));
 const store = new OrbitStore();
 
 const TOOLS = [
@@ -126,7 +130,7 @@ async function handleLine(line) {
         sendResponse(id, {
           protocolVersion: params?.protocolVersion || "2024-11-05",
           capabilities: { tools: {}, resources: {} },
-          serverInfo: { name: "azure-orbit", version: "1.0.0" }
+          serverInfo: { name: "azure-orbit", version: readPluginVersion(PLUGIN_ROOT) }
         });
         break;
       case "ping":

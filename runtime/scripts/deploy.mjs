@@ -13,7 +13,7 @@ import { planLanguageServerBinary } from './language-server-binary-patch.mjs';
 
 const PROJECT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STATE_DIR = '.antigravity-model-patch';
-const ISSUE = 'https://github.com/vahapogut/antigravity-add-model/issues/2';
+const ISSUE = 'https://github.com/A16Nights/antigravity-azure-orbit/issues';
 const HASH = /^[a-f0-9]{64}$/;
 export const REQUIRED_BUILD_FILES = [
   'desktop.js',
@@ -466,10 +466,37 @@ export async function deploy(options = {}, operations = {}) {
   fs.mkdirSync(meta, { recursive: true });
   const lock = path.join(meta, 'deploy.lock');
   let lockFd;
+  const tryOpenLock = () => fs.openSync(lock, 'wx');
   try {
-    lockFd = fs.openSync(lock, 'wx');
+    lockFd = tryOpenLock();
   } catch {
-    fail('DEPLOY_LOCKED', `Another deployment or an interrupted run owns ${lock}. Inspect it before retrying.`);
+    // Check whether the previous lock owner PID is still alive; recover stale locks automatically.
+    let stale = false;
+    try {
+      const lockText = fs.readFileSync(lock, 'utf8');
+      const m = /pid=(\d+)/.exec(lockText);
+      const pid = m ? Number(m[1]) : 0;
+      if (pid > 0 && pid !== process.pid) {
+        try {
+          process.kill(pid, 0);
+        } catch (err) {
+          if (err && err.code === 'ESRCH') stale = true;
+        }
+      } else {
+        const st = fs.statSync(lock);
+        if (Date.now() - st.mtimeMs > 10 * 60 * 1000) stale = true;
+      }
+    } catch {}
+    if (stale) {
+      try { fs.unlinkSync(lock); } catch {}
+      try {
+        lockFd = tryOpenLock();
+      } catch {
+        fail('DEPLOY_LOCKED', `Another deployment or an interrupted run owns ${lock}. Inspect it before retrying.`);
+      }
+    } else {
+      fail('DEPLOY_LOCKED', `Another deployment or an interrupted run owns ${lock}. Inspect it before retrying.`);
+    }
   }
   fs.writeFileSync(lockFd, `pid=${process.pid}\n`);
   let staging;

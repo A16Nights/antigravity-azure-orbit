@@ -174,7 +174,7 @@
     .item-row.disabled-row { opacity: 0.65; }
     .item-left { display: flex; flex-direction: column; gap: 4px; min-width: 220px; flex: 1; }
     .item-title-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .item-name { font-size: 14px; font-weight: 600; }
+    .item-name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; word-break: break-word; }
     .tag-pill {
       font-size: 11px;
       padding: 1px 7px;
@@ -368,7 +368,7 @@
       pointer-events: none;
       transform: translateY(10px);
       transition: 0.2s;
-      z-index: 99;
+      z-index: 12000;
       max-width: 360px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
