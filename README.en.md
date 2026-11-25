@@ -45,7 +45,7 @@ The local proxy hot-reads <code>~/.gemini/antigravity/custom_models.json</code> 
 Already configured External Orchestrator? Sync all enabled providers, keys, and model lists with a single click—zero duplicate setup.
 </td>
 <td width="50%" valign="top">
-<h4>🛠️ Antigravity 2.32+ / 2.33.0+ Engine</h4>
+<h4>🛠️ Antigravity 2.32+ ~ 2.35+ Engine</h4>
 Fully adapted to the new <code>...spread</code> (<code>baseLsArgs</code>) layout with a built-in search box inside the native dropdown and non-destructive coexisting patches.
 </td>
 </tr>
@@ -93,8 +93,8 @@ Fully adapted to the new <code>...spread</code> (<code>baseLsArgs</code>) layout
 ### 3. One-Click Sync with External Orchestrator
 - Users of **[External Orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator)** can click **⚡ Sync & Mount from Orchestrator** (or **⇄ Import Providers Only**) to pull all enabled providers, keys, and models automatically.
 
-### 4. Antigravity 2.32+ / 2.33.0+ Runtime Patch Engine (`runtime/`)
-- **Modern Argument Layout**: Fully supports `dist/languageServer.js` `...spread` (`baseLsArgs`) injection in Antigravity 2.32+ / 2.33.0+, plus a live search filter inside both Chinese and English native model dropdowns.
+### 4. Antigravity 2.32+ ~ 2.35+ Runtime Patch Engine (`runtime/`)
+- **Modern Argument Layout**: Fully supports `dist/languageServer.js` `...spread` (`baseLsArgs`) injection in Antigravity 2.32+ / 2.33.0+ / 2.35+, plus a live search filter inside both Chinese and English native model dropdowns.
 - **Non-Destructive Coexistence**: Uses incremental marker injection to coexist cleanly with other extensions; inspect patch status in the panel and generate one-click Desktop install/update or restore scripts.
 
 ### 5. Unified Azure Suite UI

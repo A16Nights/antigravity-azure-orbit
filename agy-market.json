@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "pluginRoot": ".",
+  "categories": [
+    "mcp-integrations",
+    "agents-reasoning"
+  ],
+  "tags": [
+    "custom-models",
+    "deepseek",
+    "openai",
+    "anthropic",
+    "ollama",
+    "model-selector",
+    "azure-suite"
+  ],
+  "minAntigravityVersion": "2.32.0",
+  "platforms": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "releaseAsset": "antigravity-azure-orbit.tar.gz"
+}
