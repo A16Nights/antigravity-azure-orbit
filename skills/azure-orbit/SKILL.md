@@ -9,7 +9,7 @@ description: >-
 
 # 苍蓝星轨 · Azure Orbit
 
-本插件将外部大模型 API（DeepSeek、OpenAI 兼容、Anthropic 兼容、本地聚合网关、Ollama）直接挂载进Antigravity客户端**输入框左下角的原生模型下拉菜单**中作为主脑使用，并自带右侧可视化管理面板（`[苍蓝星轨](sidecar://azure-orbit/orbit/)`）。
+本插件将外部大模型 API（DeepSeek、OpenAI 兼容、Anthropic 兼容、本地聚合网关、Ollama）直接挂载进Antigravity客户端**输入框左下角的原生模型下拉菜单**中作为主脑使用，并自带右侧可视化管理面板（`[苍蓝星轨](sidecar://azure-orbit/orbit/)`，Antigravity 2.35.1+ 回复含该链接会自动弹开侧栏，仅在用户需打开面板时输出）。
 
 ## 数据与配置位置
 - 原生主模型配置文件：`~/.gemini/antigravity/custom_models.json`（底层代理每次请求实时读取，修改后无需重启客户端即可生效；按 `Ctrl+R` 可立即刷新左下角菜单列表）

@@ -2,7 +2,7 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "azure-orbit",
   "displayName": "苍蓝星轨",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "logo": "assets/logo.svg",
   "description": "苍蓝星轨（Azure Orbit）— Antigravity 原生主模型挂载与可视化管理插件：将外部大模型 API（DeepSeek / OpenAI 兼容 / Anthropic 兼容 / OpenRouter / Kimi / 本地聚合网关 / Ollama）直接注入客户端左下角原生模型下拉菜单作为主脑使用，支持一键拉取模型、多关键词检索、与苍蓝协奏台一键同步及 2.32+/2.33.0+ 底层补丁管理。",
   "suggestedPrompts": [
