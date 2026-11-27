@@ -1,6 +1,6 @@
 {
   "name": "antigravity-azure-orbit",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "苍蓝星轨 (Azure Orbit) — Native primary model injector and sidecar console for Google Antigravity",
   "type": "module",
   "license": "Apache-2.0",
